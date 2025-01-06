@@ -1,12 +1,15 @@
 import requests
 from datetime import datetime
 
-#Helper function to fetch weather data.
+    #Helper function to fetch weather data with error handling if API call fails
 def fetch_weather_data(api_url):
     response = requests.get(api_url)
-    return response.json()
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise Exception("Failed to fetch data from API.")
 
-#Fetch current weather data
+    #Fetch current weather data
 def display_current_weather(city_name):
     api_key = "04e13864eb3t2f8af00833563db7ofc6"
     api_url = f"https://api.shecodes.io/weather/v1/current?query={city_name}&key={api_key}"
@@ -38,10 +41,8 @@ def display_weather_forecast(city_name):
 
     forecast_data = fetch_weather_data(api_url)
 
-    # Extract forecast data 
-    forecast_days = forecast_data['forecast']['daily'][:3] 
-
-    # Display forecast results for next 3 days with name of weekdays
+    # Extract forecast data and display forecast results for next 3 days with name of weekdays
+    forecast_days = forecast_data['daily'][:3]
     print("\nWeather forecast for the next 3 days:")
     for day in forecast_days:
         weekday_name = datetime.utcfromtimestamp(day['time']).strftime('%A')
